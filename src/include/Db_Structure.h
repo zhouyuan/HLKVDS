@@ -1,15 +1,12 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
-#ifndef _KV_DB_DB_STRUCTURE_H_
-#define _KV_DB_DB_STRUCTURE_H_
+#ifndef _HLKVDS_DB_STRUCTURE_H_
+#define _HLKVDS_DB_STRUCTURE_H_
 
 #include <stdint.h>
 
-namespace kvdb {
+namespace hlkvds {
 #define MAGIC_NUMBER 0xffff0001
+
+#define WITH_ITERATOR 1
 
 #define RMDsize 160
 #define KEYDIGEST_INT_NUM RMDsize/(sizeof(uint32_t)*8) // RIPEMD-160/(sizeof(uint32_t)*8) 160/32
@@ -22,6 +19,7 @@ namespace kvdb {
 
 #define SEG_WRITE_THREAD 10
 #define SEG_FULL_RATE 0.9
+#define CAPACITY_THRESHOLD_TODO_GC 0.5
 #define GC_UPPER_LEVEL 0.3
 #define GC_LOWER_LEVEL 0.1
 
@@ -90,6 +88,6 @@ enum struct OpType {
     UPDATE,
     DELETE
 };
-} // namespace kvdb
+} // namespace hlkvds
 
-#endif  // #define _KV_DB_DB_STRUCTURE_H_
+#endif  // #define _HLKVDS_DB_STRUCTURE_H_

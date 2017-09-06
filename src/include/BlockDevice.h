@@ -1,10 +1,5 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
-#ifndef KV_DB_BLOCKDEVICE_H_
-#define KV_DB_BLOCKDEVICE_H_
+#ifndef _HLKVDS_BLOCKDEVICE_H_
+#define _HLKVDS_BLOCKDEVICE_H_
 
 #include <sys/types.h>
 #include <stdint.h>
@@ -14,7 +9,7 @@
 
 using namespace std;
 
-namespace kvdb {
+namespace hlkvds {
 class BlockDevice {
 public:
     static BlockDevice* CreateDevice();
@@ -40,6 +35,6 @@ public:
 
     virtual void ClearReadCache() = 0;
 };
-}//namespace kvdb
+}//namespace hlkvds
 
-#endif // #ifndef _KV_DB_BLOCKDEVICE_H_
+#endif // #ifndef _HLKVDS_BLOCKDEVICE_H_

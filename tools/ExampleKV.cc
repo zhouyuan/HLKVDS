@@ -1,20 +1,12 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <unistd.h>
-#include "hyperds/Kvdb.h"
+#include "hlkvds/Kvdb.h"
 
 #define TEST_RECORD_NUM 1
 
-#define TEST_DB_FILENAME "/dev/sdb1"
-//#define TEST_DB_FILENAME "/dev/sdb3"
-
-void Get(kvdb::DB *db) {
+void Get(hlkvds::DB *db) {
     int key_len;
     for (int index = 0; index < TEST_RECORD_NUM; index++) {
         stringstream key_ss;
@@ -28,7 +20,7 @@ void Get(kvdb::DB *db) {
     }
 
 }
-void Insert(kvdb::DB *db) {
+void Insert(hlkvds::DB *db) {
     int key_len;
     int value_len;
     for (int index = 0; index < TEST_RECORD_NUM; index++) {
@@ -45,7 +37,7 @@ void Insert(kvdb::DB *db) {
 
 }
 
-void Delete(kvdb::DB *db) {
+void Delete(hlkvds::DB *db) {
     int key_len;
     for (int index = 0; index < TEST_RECORD_NUM; index++) {
         stringstream key_ss;
@@ -57,27 +49,29 @@ void Delete(kvdb::DB *db) {
     }
 
 }
-void OpenExample() {
-    kvdb::DB *db;
+void OpenExample(string filename) {
+    hlkvds::DB *db;
 
-    if (!kvdb::DB::OpenDB(TEST_DB_FILENAME, &db)) {
+    if (!hlkvds::DB::OpenDB(filename, &db)) {
         return;
     }
 
     Get(db);
     Insert(db);
-    sleep(2);
+    //sleep(2);
     Get(db);
     Delete(db);
-    sleep(2);
+    //sleep(2);
     Get(db);
     Insert(db);
-    sleep(2);
+    //sleep(2);
+    Get(db);
 
     delete db;
 }
 
-int main() {
-    OpenExample();
+int main(int argc, char** argv) {
+    string filename = argv[1];
+    OpenExample(filename);
     return 0;
 }

@@ -1,21 +1,16 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
-#ifndef _KV_DB_SUPERBLOCK_H_
-#define _KV_DB_SUPERBLOCK_H_
+#ifndef _HLKVDS_SUPERBLOCK_H_
+#define _HLKVDS_SUPERBLOCK_H_
 
 #include <mutex>
 
 #include "Db_Structure.h"
 #include "BlockDevice.h"
-#include "hyperds/Options.h"
+#include "hlkvds/Options.h"
 #include "Utils.h"
 
 using namespace std;
 
-namespace kvdb {
+namespace hlkvds {
 class SuperBlockManager;
 
 class DBSuperBlock {
@@ -173,6 +168,6 @@ private:
     mutable std::mutex mtx_;
 
 };
-}// namespace kvdb
+}// namespace hlkvds
 
-#endif //#ifndef _KV_DB_SUPERBLOCK_H_
+#endif //#ifndef _HLKVDS_SUPERBLOCK_H_

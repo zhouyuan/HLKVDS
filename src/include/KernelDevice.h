@@ -1,17 +1,12 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
-#ifndef KV_DB_KERNELDEVICE_H_
-#define KV_DB_KERNELDEVICE_H_
+#ifndef _HLKVDS_KERNELDEVICE_H_
+#define _HLKVDS_KERNELDEVICE_H_
 
 #include <string>
 #include <unistd.h>
 
 #include "BlockDevice.h"
 
-namespace kvdb {
+namespace hlkvds {
 
 class KernelDevice : public BlockDevice {
 public:
@@ -67,6 +62,6 @@ private:
 
 };
 
-}//namespace kvdb
+}//namespace hlkvds
 
-#endif // #ifndef KV_DB_KERNELDEVICE_H_
+#endif // #ifndef _HLKVDS_KERNELDEVICE_H_

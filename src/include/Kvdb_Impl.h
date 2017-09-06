@@ -1,10 +1,5 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
-#ifndef _KV_DB_KVDB_IMPL_H_
-#define _KV_DB_KVDB_IMPL_H_
+#ifndef _HLKVDS_KVDB_IMPL_H_
+#define _HLKVDS_KVDB_IMPL_H_
 
 #include <list>
 #include <queue>
@@ -14,27 +9,33 @@
 #include <thread>
 
 #include "Db_Structure.h"
-#include "hyperds/Options.h"
-#include "hyperds/status.h"
+#include "hlkvds/Options.h"
+#include "hlkvds/Status.h"
+#include "hlkvds/Write_batch.h"
+#include "hlkvds/Iterator.h"
 #include "BlockDevice.h"
 #include "SuperBlockManager.h"
 #include "IndexManager.h"
-#include "DataHandle.h"
 #include "SegmentManager.h"
 #include "GcManager.h"
 #include "WorkQueue.h"
+#include "Segment.h"
 
-namespace kvdb {
+namespace hlkvds {
 
-class KvdbDS {
+class KVDS {
 public:
-    static KvdbDS* Create_KvdbDS(const char* filename, Options opts);
-    static KvdbDS* Open_KvdbDS(const char* filename, Options opts);
+    static KVDS* Create_KVDS(const char* filename, Options opts);
+    static KVDS* Open_KVDS(const char* filename, Options opts);
 
     Status Insert(const char* key, uint32_t key_len, const char* data,
                   uint16_t length);
     Status Get(const char* key, uint32_t key_len, string &data);
     Status Delete(const char* key, uint32_t key_len);
+
+    Status InsertBatch(WriteBatch *batch);
+
+    Iterator* NewIterator();
 
     void Do_GC();
     void ClearReadCache() {
@@ -52,10 +53,10 @@ public:
         return segReaperQue_.length();
     }
 
-    virtual ~KvdbDS();
+    virtual ~KVDS();
 
 private:
-    KvdbDS(const string& filename, Options opts);
+    KVDS(const string& filename, Options opts);
     Status openDB();
     Status closeDB();
     bool writeMetaDataToDevice();
@@ -76,7 +77,7 @@ private:
     GcManager* gcMgr_;
     string fileName_;
 
-    SegmentSlice *seg_;
+    SegForReq *seg_;
     std::mutex segMtx_;
     Options options_;
 
@@ -91,7 +92,7 @@ private:
 private:
     std::vector<std::thread> segWriteTP_;
     std::atomic<bool> segWriteT_stop_;
-    WorkQueue<SegmentSlice*> segWriteQue_;
+    WorkQueue<SegForReq*> segWriteQue_;
     void SegWriteThdEntry();
 
     // Seg Timeout thread
@@ -104,7 +105,7 @@ private:
 private:
     std::thread segReaperT_;
     std::atomic<bool> segReaperT_stop_;
-    WorkQueue<SegmentSlice*> segReaperQue_;
+    WorkQueue<SegForReq*> segReaperQue_;
     void SegReaperThdEntry();
 
     //GC thread
@@ -115,6 +116,6 @@ private:
     void GCThdEntry();
 };
 
-} // namespace kvdb
+} // namespace hlkvds
 
-#endif  // #ifndef _KV_DB_KVDB_IMPL_H_
+#endif  // #ifndef _HLKVDS_KVDB_IMPL_H_

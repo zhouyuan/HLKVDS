@@ -1,8 +1,3 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -18,7 +13,7 @@
 #include <vector>
 #include "KernelDevice.h"
 
-namespace kvdb {
+namespace hlkvds {
 KernelDevice::KernelDevice() :
     directFd_(-1), bufFd_(-1), capacity_(0), blockSize_(0), path_("") {
 }
@@ -146,8 +141,9 @@ int KernelDevice::Open(string path, bool dsync) {
         capacity_ = get_block_device_capacity();
         blockSize_ = statbuf.st_blksize;
     } else {
-        __ERROR("The path is not a Block device.");
-        goto open_fail;
+        capacity_ = statbuf.st_size;
+        //TODO:() dynamic block size in file mode
+        blockSize_ = 4096;
     }
     return FOK;
     open_fail: close(bufFd_);
@@ -175,7 +171,10 @@ ssize_t KernelDevice::pWrite(const void* buf, size_t count, off_t offset) {
     }
     __INFO("Buffered FD Pwrite, write size = %ld, block_size = %d",
             count, get_blocksize());
-    return pwrite(bufFd_, buf, count, offset);
+    //return pwrite(bufFd_, buf, count, offset);
+    ssize_t ret = pwrite(bufFd_, buf, count, offset);
+    fsync(bufFd_);
+    return ret;
 }
 
 ssize_t KernelDevice::pRead(void* buf, size_t count, off_t offset) {

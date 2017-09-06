@@ -1,10 +1,5 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
-#ifndef _KV_DB_SEGMENT_MANAGER_H_
-#define _KV_DB_SEGMENT_MANAGER_H_
+#ifndef _HLKVDS_SEGMENT_MANAGER_H_
+#define _HLKVDS_SEGMENT_MANAGER_H_
 
 #include <stdio.h>
 #include <vector>
@@ -13,14 +8,14 @@
 
 #include "Db_Structure.h"
 #include "BlockDevice.h"
-#include "hyperds/Options.h"
+#include "hlkvds/Options.h"
 #include "SuperBlockManager.h"
 #include "IndexManager.h"
 #include "Utils.h"
 
 using namespace std;
 
-namespace kvdb {
+namespace hlkvds {
 
 class DataHeader;
 class HashEntry;
@@ -124,6 +119,10 @@ public:
 
     bool ComputeSegOffsetFromOffset(uint64_t offset, uint64_t& seg_offset);
     bool ComputeDataOffsetPhyFromEntry(HashEntry* entry, uint64_t& data_offset);
+#ifdef WITH_ITERATOR
+    bool ComputeKeyOffsetPhyFromEntry(HashEntry* entry, uint64_t& key_offset);
+#else
+#endif
 
     bool Alloc(uint32_t& seg_id);
     bool AllocForGC(uint32_t& seg_id);
@@ -162,5 +161,5 @@ private:
 
 };
 
-} //end namespace kvdb
-#endif // #ifndef _KV_DB_SEGMENT_MANAGER_H_
+} //end namespace hlkvds
+#endif // #ifndef _HLKVDS_SEGMENT_MANAGER_H_

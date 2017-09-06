@@ -1,8 +1,3 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -12,18 +7,33 @@
 
 #include "IndexManager.h"
 
-namespace kvdb {
+namespace hlkvds {
 
+#ifdef WITH_ITERATOR
+DataHeader::DataHeader() :
+    key_digest(Kvdb_Digest()), key_size(0), data_size(0), data_offset(0),
+            next_header_offset(0) {
+}
+#else
 DataHeader::DataHeader() :
     key_digest(Kvdb_Digest()), data_size(0), data_offset(0),
             next_header_offset(0) {
 }
+#endif
 
-DataHeader::DataHeader(const Kvdb_Digest &digest, uint16_t size,
+#ifdef WITH_ITERATOR
+DataHeader::DataHeader(const Kvdb_Digest &digest, uint16_t key_len, uint16_t data_len,
                        uint32_t offset, uint32_t next_offset) :
+    key_digest(digest), key_size(key_len), data_size(data_len), data_offset(offset),
+            next_header_offset(next_offset) {
+}
+#else
+DataHeader::DataHeader(const Kvdb_Digest &digest, uint16_t size,
+                        uint32_t offset, uint32_t next_offset) :
     key_digest(digest), data_size(size), data_offset(offset),
             next_header_offset(next_offset) {
 }
+#endif
 
 DataHeader::~DataHeader() {
 }
@@ -289,6 +299,15 @@ bool IndexManager::UpdateIndex(KVSlice* slice) {
     return true;
 }
 
+void IndexManager::UpdateIndexes(list<KVSlice*> &slice_list) {
+    std::lock_guard<std::mutex> l(batch_mtx_);
+    for (list<KVSlice *>::iterator iter = slice_list.begin(); iter
+            != slice_list.end(); iter++) {
+        KVSlice *slice = *iter;
+        UpdateIndex(slice);
+    } __DEBUG("UpdateToIndex Success!");
+}
+
 void IndexManager::RemoveEntry(HashEntry entry) {
     Kvdb_Digest digest = entry.GetKeyDigest();
 
@@ -381,6 +400,7 @@ bool IndexManager::IsSameInMem(HashEntry entry)
 
 uint64_t IndexManager::ComputeIndexSizeOnDevice(uint32_t ht_size) {
     uint64_t index_size = sizeof(time_t)
+            + sizeof(int) * ht_size
             + IndexManager::SizeOfHashEntryOnDisk() * ht_size;
     uint64_t index_size_pages = index_size / getpagesize();
     return (index_size_pages + 1) * getpagesize();

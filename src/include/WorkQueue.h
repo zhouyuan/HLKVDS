@@ -1,17 +1,12 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
-#ifndef WORKQUEUE_H
-#define WORKQUEUE_H
+#ifndef _HLKVDS_WORKQUEUE_H_
+#define _HLKVDS_WORKQUEUE_H_
 
 #include <queue>
 #include <mutex>
 #include <chrono>
 #include <iostream>
 
-namespace kvdb {
+namespace hlkvds {
 template <typename T> class WorkQueue {
 public:
     typedef T QueueType;
@@ -71,4 +66,4 @@ if    (cv_.wait_for(lck, std::chrono::milliseconds(msec), [this] {return !dataQu
 
             };
 }
-#endif
+#endif //#ifndef _HLKVDS_WORKQUEUE_H_

@@ -1,15 +1,8 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
+#ifndef _HLKVDS_STATUS_H_
+#define _HLKVDS_STATUS_H_
 
-//  Copyright (c) 2011-present, Facebook, Inc.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
-#ifndef Status_H_
-#define Status_H_
+#include <string>
+namespace hlkvds {
 
 class Status {
 public:
@@ -77,5 +70,5 @@ private:
     Status(Code _code, const char* msg);
 
 };
-
-#endif /* Status_H_ */
+}
+#endif //#define _HLKVDS_STATUS_H_

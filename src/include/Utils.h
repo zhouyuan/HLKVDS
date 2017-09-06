@@ -1,10 +1,5 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
-#ifndef _KV_DB_UTILS_H_
-#define _KV_DB_UTILS_H_
+#ifndef _HLKVDS_UTILS_H_
+#define _HLKVDS_UTILS_H_
 
 #include <time.h>
 #include <sys/time.h>
@@ -14,7 +9,7 @@
 #include <signal.h>
 #include "Db_Structure.h"
 
-namespace kvdb {
+namespace hlkvds {
 class KVTime {
 public:
     static inline size_t SizeOf() {
@@ -114,4 +109,4 @@ private:
 };
 }
 
-#endif //#ifndef _KV_DB_UTILS_H_
+#endif //#ifndef _HLKVDS_UTILS_H_

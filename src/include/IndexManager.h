@@ -1,44 +1,54 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
-#ifndef _KV_DB_INDEXMANAGER_H_
-#define _KV_DB_INDEXMANAGER_H_
+#ifndef _HLKVDS_INDEXMANAGER_H_
+#define _HLKVDS_INDEXMANAGER_H_
 
 #include <string>
 #include <sys/time.h>
 #include <mutex>
+#include <list>
 
 #include "Db_Structure.h"
 #include "BlockDevice.h"
-#include "hyperds/Options.h"
+#include "hlkvds/Options.h"
 #include "Utils.h"
 #include "KeyDigestHandle.h"
 #include "LinkedList.h"
-#include "DataHandle.h"
 #include "SuperBlockManager.h"
 #include "SegmentManager.h"
+#include "Segment.h"
 
 using namespace std;
 
-namespace kvdb {
+namespace hlkvds {
 class KVSlice;
 class SegmentSlice;
 
 class DataHeader {
 private:
     Kvdb_Digest key_digest;
+#ifdef WITH_ITERATOR
+    uint16_t key_size;
+#endif
     uint16_t data_size;
     uint32_t data_offset;
     uint32_t next_header_offset;
 
 public:
     DataHeader();
+#ifdef WITH_ITERATOR
+    DataHeader(const Kvdb_Digest &digest, uint16_t key_len, uint16_t data_len,
+               uint32_t data_offset, uint32_t next_header_offset);
+#else
     DataHeader(const Kvdb_Digest &digest, uint16_t data_size,
                uint32_t data_offset, uint32_t next_header_offset);
+#endif
+
     ~DataHeader();
 
+#ifdef WITH_ITERATOR
+    uint16_t GetKeySize() const {
+        return key_size;
+    }
+#endif
     uint16_t GetDataSize() const {
         return data_size;
     }
@@ -53,6 +63,11 @@ public:
     }
 
     void SetDigest(const Kvdb_Digest& digest);
+#ifdef WITH_ITERATOR
+    void SetKeySize(uint16_t size) {
+        key_size = size;
+    }
+#endif
     void SetDataSize(uint16_t size) {
         data_size = size;
     }
@@ -100,6 +115,11 @@ public:
     uint64_t GetHeaderOffsetPhy() const {
         return header_offset.GetHeaderOffset();
     }
+#ifdef WITH_ITERATOR
+    uint16_t GetKeySize() const {
+        return header.GetKeySize();
+    }
+#endif
     uint16_t GetDataSize() const {
         return header.GetDataSize();
     }
@@ -192,6 +212,12 @@ public:
             return entryPtr_->GetHeaderOffsetPhy();
         }
 
+#ifdef WITH_ITERATOR
+        uint16_t GetKeySize() const {
+            return entryPtr_->GetKeySize();
+        }
+#endif
+
         uint16_t GetDataSize() const {
             return entryPtr_->GetDataSize();
         }
@@ -250,6 +276,7 @@ public:
         bool WriteIndexToDevice();
 
         bool UpdateIndex(KVSlice* slice);
+        void UpdateIndexes(list<KVSlice*> &slice_list);
         bool GetHashEntry(KVSlice *slice);
         void RemoveEntry(HashEntry entry);
 
@@ -265,6 +292,9 @@ public:
 
         bool IsSameInMem(HashEntry entry);
 
+        LinkedList<HashEntry>* GetEntryListByNo(uint32_t no) {
+            return hashtable_[no].entryList_;
+        }
     public:
         struct HashtableSlot
         {
@@ -306,9 +336,10 @@ public:
 
         KVTime* lastTime_;
         mutable std::mutex mtx_;
+        std::mutex batch_mtx_;
 
     };
 
 
-}// namespace kvdb
-#endif //#ifndef _KV_DB_INDEXMANAGER_H_
+}// namespace hlkvds
+#endif //#ifndef _HLKVDS_INDEXMANAGER_H_

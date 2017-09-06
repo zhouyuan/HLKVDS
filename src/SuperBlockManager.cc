@@ -1,8 +1,3 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -10,7 +5,7 @@
 
 #include "SuperBlockManager.h"
 
-namespace kvdb {
+namespace hlkvds {
 bool SuperBlockManager::InitSuperBlockForCreateDB(uint64_t offset) {
     sb_ = new DBSuperBlock;
     startOff_ = offset;
@@ -33,12 +28,25 @@ bool SuperBlockManager::LoadSuperBlockFromDevice(uint64_t offset) {
 }
 
 bool SuperBlockManager::WriteSuperBlockToDevice() {
-    uint64_t length = SuperBlockManager::SizeOfDBSuperBlock();
-    if ((uint64_t) bdev_->pWrite(sb_, length, startOff_) != length) {
+    uint64_t length = SuperBlockManager::GetSuperBlockSizeOnDevice();
+    char *align_buf;
+    posix_memalign((void **)&align_buf, 4096, length);
+    memset(align_buf, 0, length);
+    memcpy((void *)align_buf, (const void*)sb_, SuperBlockManager::SizeOfDBSuperBlock());
+    if ((uint64_t) bdev_->pWrite(align_buf, length, startOff_) != length) {
         __ERROR("Could not write superblock at position %ld\n", startOff_);
+        free(align_buf);
         return false;
     }
+    free(align_buf);
     return true;
+
+    //uint64_t length = SuperBlockManager::SizeOfDBSuperBlock();
+    //if ((uint64_t) bdev_->pWrite(sb_, length, startOff_) != length) {
+    //    __ERROR("Could not write superblock at position %ld\n", startOff_);
+    //    return false;
+    //}
+    //return true;
 }
 
 void SuperBlockManager::SetSuperBlock(DBSuperBlock& sb) {
@@ -84,4 +92,4 @@ void SuperBlockManager::SetDataTheorySize(uint64_t size) {
     std::lock_guard < std::mutex > l(mtx_);
     sb_->data_theory_size = size;
 }
-} // namespace kvdb
+} // namespace hlkvds

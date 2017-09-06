@@ -1,12 +1,7 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
 #include <stdio.h>
 #include "Utils.h"
 
-namespace kvdb {
+namespace hlkvds {
 
 const char* KVTime::ToChar(KVTime& _time) {
     return asctime(localtime(&_time.tm_.tv_sec));
@@ -140,4 +135,4 @@ bool Thread::Am_self() const {
 pthread_t Thread::Self() {
     return tid_;
 }
-} // namespace kvdb
+} // namespace hlkvds

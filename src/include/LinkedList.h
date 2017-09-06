@@ -1,17 +1,12 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
-#ifndef _KV_DB_LINKEDLIST_H_
-#define _KV_DB_LINKEDLIST_H_
+#ifndef _HLKVDS_LINKEDLIST_H_
+#define _HLKVDS_LINKEDLIST_H_
 
 #include <string.h>
 #include <unistd.h>
 #include <vector>
 
 using namespace std;
-namespace kvdb {
+namespace hlkvds {
 
 template<typename T>
 class Node {
@@ -45,6 +40,8 @@ public:
     int get_size() {
         return size_;
     }
+    T* getByNo(int no);
+    int searchNo(T& toBeSearched);
 
 private:
     Node<T>* head_;
@@ -209,6 +206,34 @@ vector<T> LinkedList<T>::get() {
     return tempVector;
 }
 
+template<typename T>
+T* LinkedList<T>::getByNo(int no) {
+    if (no > size_) {
+        return NULL;
+    }
+    Node<T>* node = head_;
+    while(no) {
+        node = node->next;
+        no--;
+    }
+    return &node->data;
 }
 
-#endif
+template<typename T>
+int LinkedList<T>::searchNo(T& toBeSearched) {
+    int no = 0;
+    Node<T>* curNode = head_;
+
+    while (curNode != NULL) {
+        if (curNode->data == toBeSearched) {
+            return no;
+        }
+        curNode = curNode->next;
+        no++;
+    }
+    return -1;
+}
+
+}
+
+#endif //#ifndef _HLKVDS_LINKEDLIST_H_

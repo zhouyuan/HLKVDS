@@ -1,12 +1,7 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
-#include "hyperds/Options.h"
+#include "hlkvds/Options.h"
 #include "Db_Structure.h"
 
-namespace kvdb {
+namespace hlkvds {
 
 Options::Options() :
     segment_size(SEGMENT_SIZE),
@@ -17,4 +12,4 @@ Options::Options() :
             gc_lower_level(GC_LOWER_LEVEL) {
 }
 
-} //namespace kvdb
+} //namespace hlkvds

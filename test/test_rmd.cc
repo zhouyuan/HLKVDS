@@ -1,8 +1,3 @@
-//  Copyright (c) 2017-present, Intel Corporation.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the root directory of this source tree. An additional grant
-//  of patent rights can be found in the PATENTS file in the same directory.
-
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -22,7 +17,8 @@ TEST_F(test_rmd, IntKeyTest)
     uint32_t conflict = 0;
     set<string> result_set;
 
-    for(uint32_t i=0; i< 4294967295; i++)
+    //for(uint32_t i=0; i< 4294967295; i++)
+    for(uint32_t i=0; i< 10; i++)
     {
         char *pi = (char *)&i;
 
@@ -32,8 +28,8 @@ TEST_F(test_rmd, IntKeyTest)
         key_char[2] = *((char *)pi+2);
         key_char[3] = *((char *)pi+3);
 
-        kvdb::Kvdb_Key key(key_char, 4);
-        kvdb::Kvdb_Digest result;
+        hlkvds::Kvdb_Key key(key_char, 4);
+        hlkvds::Kvdb_Digest result;
         KeyDigestHandle::ComputeDigest(&key, result);
 
         string final_res = KeyDigestHandle::Tostring(&result);
@@ -69,8 +65,8 @@ TEST_F(test_rmd, RegularTest)
 
     int key_len = strlen(key_raw);
 
-    kvdb::Kvdb_Key key(key_raw, key_len);
-    kvdb::Kvdb_Digest result;
+    hlkvds::Kvdb_Key key(key_raw, key_len);
+    hlkvds::Kvdb_Digest result;
     KeyDigestHandle::ComputeDigest(&key, result);
 
     string final_res = KeyDigestHandle::Tostring(&result);
