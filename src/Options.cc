@@ -6,6 +6,7 @@ namespace hlkvds {
 Options::Options() :
 	    disable_cache(DISABLE_CACHE),
         cache_size(CACHE_SIZE),
+	isDedup(IS_DEDUP),
         cache_policy(CACHE_POLICY),
         slru_partition(SLRU_PARTITION),
 	    segment_size(SEGMENT_SIZE),

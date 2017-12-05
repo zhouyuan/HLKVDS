@@ -8,6 +8,7 @@ struct Options {
     //use in readCache
     bool disable_cache;
     int cache_size;
+    int isDedup;
     int cache_policy;
     int slru_partition;
 

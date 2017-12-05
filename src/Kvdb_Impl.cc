@@ -181,7 +181,7 @@ KVDS::KVDS(const char* filename, Options opts) :
     idxMgr_ = new IndexManager(sbMgr_, options_);
 
     if(!options_.disable_cache){
-        rdCache_ = new ReadCache(CachePolicy(options_.cache_policy), (size_t) options_.cache_size, options_.slru_partition);
+        rdCache_ = new ReadCache(CachePolicy(options_.cache_policy), (size_t) options_.cache_size, options_.slru_partition, options_.isDedup);
     }
 
     metaStor_ = new MetaStor(filename, bdVec_, sbMgr_, idxMgr_, options_);
@@ -220,7 +220,7 @@ Status KVDS::Get(const char* key, uint32_t key_len, string &data) {
 
     if(!options_.disable_cache) {
         if(rdCache_->Get(slice.GetKeyStr(), data)) {
-            rdCache_->Put(slice.GetKeyStr(), data);
+           // rdCache_->Put(slice.GetKeyStr(), data);
             return Status::OK();
         }
     }
