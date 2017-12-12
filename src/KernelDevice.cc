@@ -190,7 +190,9 @@ ssize_t KernelDevice::pWritev(const struct iovec *iov, int iovcnt, off_t offset)
 }
 
 ssize_t KernelDevice::pReadv(const struct iovec *iov, int iovcnt, off_t offset) {
-    return preadv(bufFd_, iov, iovcnt, offset);
+    ssize_t result = pread(bufFd_, buf, count, offset);
+    posix_fadvise(bufFd_, offset, count, POSIX_FADV_DONTNEED);
+    return result;
 }
 
 void KernelDevice::ClearReadCache() {
