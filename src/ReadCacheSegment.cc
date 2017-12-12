@@ -10,14 +10,14 @@ namespace dslab{
 //	hitCandidates=0;
 #endif
 
-ReadCache::ReadCache(CachePolicy policy, size_t cache_size, int percent, bool is_dedup){
+ReadCacheSegment::ReadCacheSegment(CachePolicy policy, size_t cache_size, int percent, bool is_dedup){
 	cache_map = CacheMap<string,string>::create(policy, cache_size, cache_size*(100-percent)/100);
 	isDedup = is_dedup;
 	em = NULL;
 }
 
 
-ReadCache::~ReadCache(){
+ReadCacheSegment::~ReadCacheSegment(){
 #ifdef FIO
         if(dslab::hitCandidates!=0){
                 double hitRate = (double)hits/(double)hitCandidates;
@@ -28,7 +28,7 @@ ReadCache::~ReadCache(){
 	delete cache_map;
 }
 
-void ReadCache::Put(string key, string value){
+void ReadCacheSegment::Put(string key, string value){
 //get footprint
 	hlkvds::Kvdb_Key input(value.c_str(),value.length());
 	hlkvds::Kvdb_Digest result;
@@ -76,7 +76,7 @@ if(isDedup){
 
 }
 
-bool ReadCache::Get(string key, string &value){
+bool ReadCacheSegment::Get(string key, string &value){
 #ifdef FIO
         hitCandidates++;
 #endif
@@ -102,7 +102,7 @@ if(isDedup){
 
 }
 
-void ReadCache::Delete(string key){
+void ReadCacheSegment::Delete(string key){
 if(isDedup){
 	std::lock_guard < std::mutex > l(mtx_);
 //	WriteLock w_lock(myLock);

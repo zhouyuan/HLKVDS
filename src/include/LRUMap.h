@@ -17,7 +17,7 @@ struct Node{
 template <class K, class D>
 class LRUMap: public CacheMap<K, D>{
 public:
-    LRUMap(size_t size){
+    LRUMap(size_t size = 1024){
         if(size <= 0)
             size = 1024;
 

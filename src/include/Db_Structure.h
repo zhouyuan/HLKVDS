@@ -25,6 +25,7 @@ namespace hlkvds {
 #define GC_UPPER_LEVEL 0.3
 #define GC_LOWER_LEVEL 0.1
 
+#define FIO
 //#define DEBUG
 #define INFO
 #define WARN
