@@ -35,8 +35,8 @@ int kvdb_open(kvdb_ioctx_t *io, const char* name, bool disable_cache, int cache_
   opts.disable_cache = disable_cache;
   opts.cache_size = cache_size;
   opts.cache_policy = cache_policy;
-  opts.slru_partition = slru_partition;
-  opts.isDedup = isDedup;
+  opts.slru_percent = slru_partition;
+  opts.is_dedup = isDedup;
   opts.shards_num = 1;
   std::string filename = name;
     hlkvds::DB::OpenDB(filename, (hlkvds::DB **)io, opts);

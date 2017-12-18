@@ -181,7 +181,12 @@ KVDS::KVDS(const char* filename, Options opts) :
     idxMgr_ = new IndexManager(sbMgr_, options_);
 
     if(!options_.disable_cache){
-        rdCache_ = new ReadCache(CachePolicy(options_.cache_policy), (size_t) options_.cache_size, options_.slru_partition, options_.isDedup);
+	if(options_.is_segmented){
+	    rdCache_ = new ReadCacheTable( options_.is_dedup, CachePolicy(options_.cache_policy), (size_t) options_.hash_code, (size_t) options_.cache_size, options_.slru_percent);
+	}else{
+	    rdCache_ = new ReadCacheSegment( options_.is_dedup, CachePolicy(options_.cache_policy), (size_t) options_.cache_size, options_.slru_percent);
+		
+	}
     }
 
     metaStor_ = new MetaStor(filename, bdVec_, sbMgr_, idxMgr_, options_);

@@ -40,9 +40,9 @@ public:
         delete[] entries;
     }
 
-    bool Put(K key, D data, K& update_key, D& update_data, bool same = false);
-    bool Get(K key, D& data);
-    bool Delete(K key);
+    bool Put(const K& key, const D& data, K& update_key, D& update_data, bool same = false);
+    bool Get(const K& key, D& data);
+    bool Delete(const K& key);
     
 private:
     void detach(Node<K,D>* node){
@@ -65,7 +65,7 @@ private:
 };
 
 template<class K , class D>
-bool LRUMap<K,D>::Put(K key , D data, K& update_key, D& update_data, bool same){
+bool LRUMap<K,D>::Put(const K& key , const D& data, K& update_key, D& update_data, bool same){
     update_key = K();
     update_data = D();
     bool poped;
@@ -102,7 +102,7 @@ bool LRUMap<K,D>::Put(K key , D data, K& update_key, D& update_data, bool same){
 }
 
 template<class K , class D>
-bool LRUMap<K,D>::Get(K key, D& data){
+bool LRUMap<K,D>::Get(const K& key, D& data){
     std::lock_guard<std::mutex> l(mtx_);
     Node<K,D> *node = cached_map[key];
     if(node){
@@ -112,13 +112,13 @@ bool LRUMap<K,D>::Get(K key, D& data){
 	return true;
     }
     else{
-        //data = D();
+        data = D();
 	return false;
     }
 }
 
 template<class K , class D>
-bool LRUMap<K,D>::Delete(K key){
+bool LRUMap<K,D>::Delete(const K& key){
     std::lock_guard<std::mutex> l(mtx_);
     Node<K,D> *node = cached_map[key];
     if(node){
