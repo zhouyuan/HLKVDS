@@ -9,14 +9,9 @@
 #include <boost/thread/shared_mutex.hpp>
 #include "KeyDigestHandle.h"
 #include "ReadCache.h"
-
+#include "Db_Structure.h"
 using namespace std;
 namespace dslab{
-
-#ifdef FIO
-        atomic<int> hits(0);
-        atomic<int> hitCandidates(0);
-#endif
 
 class ReadCacheSegment: public ReadCache{
 	public:
@@ -25,11 +20,15 @@ class ReadCacheSegment: public ReadCache{
 			cache_map = CacheMap<string,string>::create(policy, cache_size, cache_size*(100-slru_percent)/100);
 			isDedup = is_dedup;
 			em = NULL;
+		#ifdef FIO
+			hits=0;
+			hitCandidates=0;
+		#endif
 		}
 		virtual ~ReadCacheSegment(){
 
 		#ifdef FIO
-			if(dslab::hitCandidates!=0){
+			if(hitCandidates!=0){
 				double hitRate = (double)hits/(double)hitCandidates;
 				cout<<"hits: "<<hits<<"; Candidates: "<<hitCandidates<<endl;
 				cout<<"hit rate: "<<hitRate<<endl;
@@ -142,6 +141,12 @@ class ReadCacheSegment: public ReadCache{
 		hlkvds::KeyDigestHandle *em;//input digest to footprint
 		std::mutex mtx_;
 		bool isDedup;
+#ifdef FIO
+	        atomic<int> hits;
+        	atomic<int> hitCandidates;
+#endif
+
+
 };
 
 //namespace
