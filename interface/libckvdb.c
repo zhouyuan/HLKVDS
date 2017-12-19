@@ -28,15 +28,17 @@ ssize_t kvdb_aio_get_return_value(kvdb_completion_t c) {
   return 0;
 }
 
-int kvdb_open(kvdb_ioctx_t *io, const char* name, bool disable_cache, int cache_size, bool isDedup, int cache_policy, int slru_partition) {
+int kvdb_open(kvdb_ioctx_t *io, const char* name, bool disable_cache, bool isSegmented, bool isDedup, int cache_policy, int hash_code, int cache_size, int slru_percent) {
   hlkvds::Options opts;
   opts.hashtable_size = 1280000;
   opts.gc_upper_level = 0.7;
   opts.disable_cache = disable_cache;
   opts.cache_size = cache_size;
   opts.cache_policy = cache_policy;
-  opts.slru_percent = slru_partition;
+  opts.slru_percent = slru_percent;
   opts.is_dedup = isDedup;
+  opts.is_segmented = isSegmented;
+  opts.hash_code = hash_code;
   opts.shards_num = 1;
   std::string filename = name;
     hlkvds::DB::OpenDB(filename, (hlkvds::DB **)io, opts);
