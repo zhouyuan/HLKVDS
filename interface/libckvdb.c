@@ -41,7 +41,6 @@ int kvdb_open(kvdb_ioctx_t *io, const char* name, bool disable_cache, bool isSeg
   opts.hash_code = hash_code;
   opts.shards_num = 1;
   std::string filename = name;
-printf("%d %d\n", cache_size, slru_percent);
     hlkvds::DB::OpenDB(filename, (hlkvds::DB **)io, opts);
   return 0;
 }
