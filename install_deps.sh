@@ -17,9 +17,9 @@ mkdir -p $DEPS_UT_LIB_DIR
 . /etc/os-release
 
 if [ "$ID" = "ubuntu" ] || [ "$ID" = "debian" ]; then
-    apt-get install -y libaio-dev libboost-all-dev
+    apt-get install -y libaio-dev libboost-all-dev automake
 elif [ "$ID" = "centos" ] || [ "$ID" = "fedora" ]; then
-    yum install -y libaio-devel boost-devel
+    yum install -y libaio-devel boost-devel automake
 fi
 
 # Googletest
